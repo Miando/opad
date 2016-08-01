@@ -16,7 +16,12 @@ NEWSPIDER_MODULE = 'andrew.spiders'
 list1 = open("1.csv").readlines()
 list2=list1[0].split(",")
 FEED_EXPORT_FIELDS =list2
-
+ITEM_PIPELINES = {
+'andrew.pipelines.AndrewPipeline': 1,
+'andrew.pipelines.AndrewPipeline2': 1,
+}
+FILES_STORE = "Sample"
+IMAGES_STORE = 'Sample'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'andrew (+http://www.yourdomain.com)'
 

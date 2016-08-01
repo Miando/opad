@@ -67,7 +67,7 @@ class MySpider(CrawlSpider):
             url = page[start_quote+1:end_quote]
 
             urls3.append(url)
-        
+
         for k in urls3:
             #url = "http://www.opad.com/"+str(k)
             yield Request(k,callback= self.parse5)
@@ -76,6 +76,10 @@ class MySpider(CrawlSpider):
         list1 = open("1.csv").readlines()
         list2=list1[0].split(",")
         dicti={}
+        dicti["title"]=""
+        dicti["file_urls"]=""
+        dicti["image_urls"]=""
+
         for i in list2:
             dicti[i]=""
         return dicti
@@ -85,7 +89,24 @@ class MySpider(CrawlSpider):
         print "--------------------------------"
         items = []
         item= self.generate_item_dict()
+        #yura:
 
+        item["file_urls"]=[]
+        item["title"] = hxs.select("//div[@class='breadcrumbs']/b/text()").extract_first()
+        print item["title"]
+        item["image_urls"] = hxs.select("//div[@class='scroller-view']/div/div/a/@href").extract()
+
+        try:
+            z = hxs.select("//div[@class='itemPDF']/div/a/@onclick").extract()
+            for i in range(len(z)):
+                x = ((z[i]).split("('")[1]).split("','")[0]
+                item["file_urls"].append(x)
+            print item["file_urls"]
+        except:
+            item["file_urls"] = ""
+            print "No PDF there"
+
+        #----------------------------------
         item["name"] = hxs.xpath("//h1[@id='itemName']/text()").extract()[0]
         item["price"] = hxs.xpath("//div[@id='mss-top-price']/em/text()").extract()[0]
         aaa="hhhh"
@@ -106,9 +127,5 @@ class MySpider(CrawlSpider):
         except:
             print "Brand not found"
         category =hxs.xpath("//div[@id='breadcrumbs']//a/text()").extract()[-1]
-
-
-
-
         items.append(item)
         return items
