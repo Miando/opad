@@ -16,7 +16,7 @@ class MySpider(CrawlSpider):
         start.append("http://www.opad.com/%s.html" % url[:-1])
 
     #start_urls =start
-    start_urls= ["http://www.opad.com/brands.html"]
+    start_urls= ["http://www.opad.com/modern-lighting.html","http://www.opad.com/modern-furniture.html"]
     '''
     rules = (
         Rule(LinkExtractor(restrict_xpaths=("")), callback='parse_item5'),
@@ -32,19 +32,23 @@ class MySpider(CrawlSpider):
         hxs = Selector(response)
 
         urls1 = hxs.xpath("//div[@class='contentsItems']/div//a/@href").extract()
-
-        for i in urls1:
-            url = "http://www.opad.com/"+str(i)+"?ps=1000000#pagingContents"
-            yield Request(url, callback=self.parse2)
-
+        price=hxs.xpath("//div[@id='mss-top-price']/em/text()").extract()
+        if price == []:
+            for i in urls1:
+                url = "http://www.opad.com/"+str(i)+"?ps=1000000#pagingContents"
+                yield Request(url, callback=self.parse1)
+        else:
+            for i in urls1:
+                url = "http://www.opad.com/"+str(i)+"?ps=1000000#pagingContents"
+                yield Request(url, callback=self.parse2)
     def parse1(self, response):
         #hxs = HtmlXPathSelector(response)
         hxs = Selector(response)
-        urls2 = hxs.xpath("//div[@class='pageNums controlBlock']/a/@href").extract()[:-1]
+        urls2 = hxs.xpath("//div[@class='contentsItems']/div//a/@href").extract()
         urls2.append(response.url)
         print urls2
         for j in urls2:
-            url = "http://www.opad.com/"+str(j)
+            url = "http://www.opad.com/"+str(j)+"?ps=1000000#pagingContents"
             yield Request(url, callback=self.parse2)
 
     def parse2(self, response):
@@ -57,13 +61,13 @@ class MySpider(CrawlSpider):
         end_quote=0
         while start_link >0:
             start_link = page.find('data-url="',end_quote)
-            print start_link
+
             start_quote = page.find('"', start_link)
-            print start_quote
+
             if start_quote == -1:
                 break
             end_quote = page.find('"', start_quote+1)
-            print end_quote
+
             url = page[start_quote+1:end_quote]
 
             urls3.append(url)

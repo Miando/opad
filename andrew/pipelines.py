@@ -9,6 +9,7 @@ import scrapy
 from scrapy.contrib.pipeline.images import ImagesPipeline,FilesPipeline
 from PIL import Image
 class AndrewPipeline(ImagesPipeline):
+    '''
     def set_filename(self, key, response):
         if response.meta['x']==1:
             return "full/Schematics/%s.jpg" % (response.meta['title'])
@@ -29,9 +30,9 @@ class AndrewPipeline(ImagesPipeline):
         for key, image, buf in super(AndrewPipeline, self).get_images(response, request, info):
             key = self.set_filename(key, response)
             yield key, image, buf
-
+    '''
 class AndrewPipeline2(FilesPipeline):
-
+    '''
     def file_path(self, request, response=None, info=None):
         #item=request.meta['item'] # Like this you can use all from item, not just url.
         image_guid = request.url.split('/')[-1]
@@ -40,3 +41,4 @@ class AndrewPipeline2(FilesPipeline):
     def get_media_requests(self, item, info):
         for file_url in item['file_urls']:
             yield scrapy.Request(file_url, meta={'title': item['title']})
+    '''
