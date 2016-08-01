@@ -89,7 +89,7 @@ class MySpider(CrawlSpider):
         print "--------------------------------"
         items = []
         item= self.generate_item_dict()
-        #yura:
+        #Yura_start:
 
         item["file_urls"]=[]
         item["title"] = hxs.select("//div[@class='breadcrumbs']/b/text()").extract_first()
@@ -106,7 +106,7 @@ class MySpider(CrawlSpider):
             item["file_urls"] = ""
             print "No PDF there"
 
-        #----------------------------------
+        #Yura_end----------------------------------
         item["name"] = hxs.xpath("//h1[@id='itemName']/text()").extract()[0]
         item["price"] = hxs.xpath("//div[@id='mss-top-price']/em/text()").extract()[0]
         aaa="hhhh"
